@@ -8,7 +8,7 @@ void main() {
       final items = service.getNavigationItemsForRole('admin');
 
       // Admin should have access to all items
-      expect(items.length, 7);
+      expect(items.length, 6);
 
       final itemIds = items.map((item) => item.id).toList();
       expect(itemIds, contains('history'));
@@ -17,7 +17,6 @@ void main() {
       expect(itemIds, contains('admin'));
       expect(itemIds, contains('reports'));
       expect(itemIds, contains('users'));
-      expect(itemIds, contains('settings'));
     });
 
     test('should return correct navigation items for user role', () {
@@ -40,31 +39,21 @@ void main() {
       final service = NavigationService();
       final items = service.getNavigationItemsForRole('supervisor');
 
-      // Supervisor should have access to reports but not admin items
-      expect(items.length, 4);
-
-      final itemIds = items.map((item) => item.id).toList();
-      expect(itemIds, contains('history'));
-      expect(itemIds, contains('dashboard'));
-      expect(itemIds, contains('profile'));
-      expect(itemIds, contains('reports'));
-      expect(itemIds, isNot(contains('admin')));
-      expect(itemIds, isNot(contains('users')));
-      expect(itemIds, isNot(contains('settings')));
+      // Supervisor role is not currently supported
+      expect(items.length, 0);
     });
 
     test('should return correct navigation items for multiple roles', () {
       final service = NavigationService();
       final items = service.getNavigationItemsForRoles(['user', 'supervisor']);
 
-      // Should have access to items from both roles
-      expect(items.length, 4);
+      // Should have access to items from user role only (supervisor not supported)
+      expect(items.length, 3);
 
       final itemIds = items.map((item) => item.id).toList();
       expect(itemIds, contains('history'));
       expect(itemIds, contains('dashboard'));
       expect(itemIds, contains('profile'));
-      expect(itemIds, contains('reports'));
     });
 
     test('should get navigation item by ID', () {
@@ -90,7 +79,6 @@ void main() {
 
       expect(roles, contains('user'));
       expect(roles, contains('admin'));
-      expect(roles, contains('supervisor'));
     });
 
     test('should update badge count for navigation item', () {

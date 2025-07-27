@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'services/auth_service.dart';
 import 'screens/login_screen.dart';
-import 'screens/home_screen.dart';
+import 'navigation/app_navigator.dart';
 
 void main() {
   runApp(const MainApp());
@@ -65,7 +65,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
     }
 
     if (_isLoggedIn) {
-      return HomeScreen(onLogout: _onLogout);
+      return AppNavigatorWidget(onLogout: _onLogout);
     } else {
       return LoginScreen(onLoginSuccess: _onLoginSuccess);
     }

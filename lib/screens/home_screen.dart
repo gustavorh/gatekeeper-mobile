@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../services/shift_service.dart';
 import '../services/user_service.dart';
+import '../services/navigation_service.dart';
 import '../utils/timezone_utils.dart';
 import '../widgets/modular_bottom_nav_bar.dart';
+import '../navigation/app_navigator.dart';
 import 'package:another_flushbar/flushbar.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback onLogout;
+  final Function(AppScreen)? onNavigate;
 
-  const HomeScreen({super.key, required this.onLogout});
+  const HomeScreen({super.key, required this.onLogout, this.onNavigate});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -89,20 +92,49 @@ class _HomeScreenState extends State<HomeScreen> {
       _selectedNavIndex = index;
     });
 
-    // TODO: Implement navigation to different screens
-    // For now, just show a notification
-    _showNotification('Navigating to index: $index', isError: false);
+    // Get the navigation items for current user roles
+    final navigationService = NavigationService();
+    final navigationItems = navigationService.getNavigationItemsForRoles(
+      _userRoles,
+    );
+
+    if (index < navigationItems.length) {
+      final item = navigationItems[index];
+      _navigateToScreen(item.id);
+    }
+  }
+
+  void _navigateToScreen(String screenId) {
+    switch (screenId) {
+      case 'history':
+        widget.onNavigate?.call(AppScreen.history);
+        break;
+      case 'dashboard':
+        // Already on dashboard
+        break;
+      case 'profile':
+        widget.onNavigate?.call(AppScreen.profile);
+        break;
+      case 'admin':
+        widget.onNavigate?.call(AppScreen.admin);
+        break;
+      case 'reports':
+        widget.onNavigate?.call(AppScreen.reports);
+        break;
+      case 'users':
+        widget.onNavigate?.call(AppScreen.users);
+        break;
+    }
   }
 
   Map<String, VoidCallback> _getNavigationCallbacks() {
     return {
-      'history': () => _showNotification('History tapped', isError: false),
-      'dashboard': () => _showNotification('Dashboard tapped', isError: false),
-      'profile': () => _showNotification('Profile tapped', isError: false),
-      'admin': () => _showNotification('Admin panel tapped', isError: false),
-      'reports': () => _showNotification('Reports tapped', isError: false),
-      'users': () =>
-          _showNotification('Users management tapped', isError: false),
+      'history': () => _navigateToScreen('history'),
+      'dashboard': () => _navigateToScreen('dashboard'),
+      'profile': () => _navigateToScreen('profile'),
+      'admin': () => _navigateToScreen('admin'),
+      'reports': () => _navigateToScreen('reports'),
+      'users': () => _navigateToScreen('users'),
     };
   }
 
@@ -250,23 +282,78 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         // Avatar and Greeting (centered)
                         Expanded(
-                          child: Column(
+                          child: Row(
                             children: [
-                              const SizedBox(height: 16),
-                              Text(
-                                greeting,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                              // User Initials Avatar
+                              Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.3),
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    _getUserInitials(),
+                                    style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                userName,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white70,
+                              const SizedBox(width: 16),
+                              // Greeting and Username
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      greeting,
+                                      style: const TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      userName,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.white70,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: Colors.white.withOpacity(0.3),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        _getUserRole(),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -641,6 +728,27 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  String _getUserInitials() {
+    if (_userProfile != null && _userProfile!['data'] != null) {
+      final userData = _userProfile!['data'];
+      final firstName = userData['firstName'] ?? '';
+      final lastName = userData['lastName'] ?? '';
+
+      return UserService.computeUserInitials(firstName, lastName);
+    }
+    return 'U'; // Default initial if no user data
+  }
+
+  String _getUserRole() {
+    if (_userRoles.isNotEmpty) {
+      // Capitalize the first letter and make it look nice
+      final role = _userRoles.first;
+      return role.substring(0, 1).toUpperCase() +
+          role.substring(1).toLowerCase();
+    }
+    return 'User'; // Default role
   }
 
   String _formatHoursWorked(dynamic clockInTime) {
