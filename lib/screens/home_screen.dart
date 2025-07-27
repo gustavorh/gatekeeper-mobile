@@ -3,6 +3,7 @@ import '../services/auth_service.dart';
 import '../services/shift_service.dart';
 import '../services/user_service.dart';
 import '../utils/timezone_utils.dart';
+import '../widgets/modular_bottom_nav_bar.dart';
 import 'package:another_flushbar/flushbar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,6 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Map<String, dynamic>? _currentShift;
   Map<String, dynamic>? _userProfile;
+  List<String> _userRoles = [];
+  int _selectedNavIndex = 1; // Dashboard is selected by default
 
   @override
   void initState() {
@@ -36,8 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         if (profileResult['success'] && profileResult['data'] != null) {
           _userProfile = profileResult['data'];
+          _userRoles = _extractUserRoles(profileResult['data']);
         } else {
           _userProfile = null;
+          _userRoles = [];
           if (profileResult['message'] != null) {
             _showNotification(profileResult['message'], isError: true);
           }
@@ -46,12 +51,59 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       setState(() {
         _userProfile = null;
+        _userRoles = [];
       });
       _showNotification(
         'Error al obtener perfil del usuario: $e',
         isError: true,
       );
     }
+  }
+
+  List<String> _extractUserRoles(Map<String, dynamic> profileData) {
+    try {
+      final roles = <String>[];
+      final userData = profileData['data'];
+
+      if (userData != null && userData['roles'] != null) {
+        for (final role in userData['roles']) {
+          if (role['name'] != null) {
+            roles.add(role['name']);
+          }
+        }
+      }
+
+      // If no roles found, default to 'user'
+      if (roles.isEmpty) {
+        roles.add('user');
+      }
+
+      return roles;
+    } catch (e) {
+      return ['user'];
+    }
+  }
+
+  void _onNavigationItemSelected(int index) {
+    setState(() {
+      _selectedNavIndex = index;
+    });
+
+    // TODO: Implement navigation to different screens
+    // For now, just show a notification
+    _showNotification('Navigating to index: $index', isError: false);
+  }
+
+  Map<String, VoidCallback> _getNavigationCallbacks() {
+    return {
+      'history': () => _showNotification('History tapped', isError: false),
+      'dashboard': () => _showNotification('Dashboard tapped', isError: false),
+      'profile': () => _showNotification('Profile tapped', isError: false),
+      'admin': () => _showNotification('Admin panel tapped', isError: false),
+      'reports': () => _showNotification('Reports tapped', isError: false),
+      'users': () =>
+          _showNotification('Users management tapped', isError: false),
+    };
   }
 
   Future<void> _fetchShiftData() async {
@@ -559,7 +611,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavBar(selectedIndex: 1),
+      bottomNavigationBar: RoleBasedBottomNavBar(
+        userRoles: _userRoles,
+        selectedIndex: _selectedNavIndex,
+        onItemSelected: _onNavigationItemSelected,
+        customCallbacks: _getNavigationCallbacks(),
+      ),
     );
   }
 
@@ -595,149 +652,5 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       return '0h 0m';
     }
-  }
-}
-
-// Custom Bottom Navigation Bar
-class CustomBottomNavBar extends StatelessWidget {
-  final int selectedIndex; // 0: History, 1: Dashboard, 2: Profile
-  const CustomBottomNavBar({super.key, required this.selectedIndex});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(32),
-          topRight: Radius.circular(32),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x11000000),
-            blurRadius: 10,
-            offset: Offset(0, -2),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.only(top: 8, bottom: 18, left: 16, right: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // History (left)
-          Expanded(
-            child: GestureDetector(
-              onTap: () {}, // TODO: Implement navigation
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      const Text('📊', style: TextStyle(fontSize: 28)),
-                      Positioned(
-                        right: -2,
-                        top: -4,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 5,
-                            vertical: 1,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            '3',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'History',
-                    style: TextStyle(
-                      color: selectedIndex == 0
-                          ? Color(0xFF357AFF)
-                          : Color(0xFF6B7280),
-                      fontWeight: selectedIndex == 0
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      fontSize: 15,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // Dashboard (center)
-          Expanded(
-            child: GestureDetector(
-              onTap: () {}, // TODO: Implement navigation
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 8),
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  color: selectedIndex == 1
-                      ? Color(0xFFF3F7FF)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('🏠', style: TextStyle(fontSize: 28)),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Dashboard',
-                      style: TextStyle(
-                        color: selectedIndex == 1
-                            ? Color(0xFF357AFF)
-                            : Color(0xFF6B7280),
-                        fontWeight: selectedIndex == 1
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // Profile (right)
-          Expanded(
-            child: GestureDetector(
-              onTap: () {}, // TODO: Implement navigation
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.person, size: 28, color: Color(0xFF6B7280)),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Profile',
-                    style: TextStyle(
-                      color: selectedIndex == 2
-                          ? Color(0xFF357AFF)
-                          : Color(0xFF6B7280),
-                      fontWeight: selectedIndex == 2
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      fontSize: 15,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
