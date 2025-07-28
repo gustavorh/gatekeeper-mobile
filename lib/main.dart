@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 import 'services/auth_service.dart';
 import 'screens/login_screen.dart';
 import 'navigation/app_navigator.dart';
+import 'core/dependencies/injection_container.dart';
 
-void main() {
+void main() async {
+  // Ensure Flutter binding is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize dependencies
+  await initializeDependencies();
+
   runApp(const MainApp());
 }
 
