@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
 import '../screens/history_screen.dart';
 import '../screens/reports_screen.dart';
+import '../screens/profile_screen.dart';
+import '../screens/users_management_screen.dart';
 
-enum AppScreen { home, history, profile, admin, reports, users }
+enum AppScreen { home, history, profile, reports, users }
 
 class AppNavigator {
   static final AppNavigator _instance = AppNavigator._internal();
@@ -72,22 +74,15 @@ class _AppNavigatorWidgetState extends State<AppNavigatorWidget> {
           },
         );
       case AppScreen.profile:
-        return _buildPlaceholderScreen(
-          'Profile',
-          'Profile screen coming soon...',
-          () {
+        return ProfileScreen(
+          onBack: () {
             setState(() {
               _navigator.goBack();
             });
           },
-        );
-      case AppScreen.admin:
-        return _buildPlaceholderScreen(
-          'Admin Panel',
-          'Admin panel coming soon...',
-          () {
+          onNavigate: (screen) {
             setState(() {
-              _navigator.goBack();
+              _navigator.navigateTo(screen);
             });
           },
         );
@@ -105,12 +100,15 @@ class _AppNavigatorWidgetState extends State<AppNavigatorWidget> {
           },
         );
       case AppScreen.users:
-        return _buildPlaceholderScreen(
-          'Users Management',
-          'Users management coming soon...',
-          () {
+        return UsersManagementScreen(
+          onBack: () {
             setState(() {
               _navigator.goBack();
+            });
+          },
+          onNavigate: (screen) {
+            setState(() {
+              _navigator.navigateTo(screen);
             });
           },
         );

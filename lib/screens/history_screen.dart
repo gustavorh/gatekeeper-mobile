@@ -149,9 +149,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
       case 'profile':
         widget.onNavigate?.call(AppScreen.profile);
         break;
-      case 'admin':
-        widget.onNavigate?.call(AppScreen.admin);
-        break;
       case 'reports':
         widget.onNavigate?.call(AppScreen.reports);
         break;
@@ -166,7 +163,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
       'history': () => _navigateToScreen('history'),
       'dashboard': () => _navigateToScreen('dashboard'),
       'profile': () => _navigateToScreen('profile'),
-      'admin': () => _navigateToScreen('admin'),
       'reports': () => _navigateToScreen('reports'),
       'users': () => _navigateToScreen('users'),
     };

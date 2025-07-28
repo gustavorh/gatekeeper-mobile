@@ -13,7 +13,7 @@ class NavigationService {
       label: 'History',
       emoji: '📊',
       allowedRoles: ['user', 'admin'],
-      badgeCount: 3,
+      badgeCount: 3, // TODO: display total shifts
     ),
     NavigationItem(
       id: 'dashboard',
@@ -26,12 +26,6 @@ class NavigationService {
       label: 'Profile',
       icon: Icons.person,
       allowedRoles: ['user', 'admin'],
-    ),
-    NavigationItem(
-      id: 'admin',
-      label: 'Admin',
-      icon: Icons.admin_panel_settings,
-      allowedRoles: ['admin'],
     ),
     NavigationItem(
       id: 'reports',

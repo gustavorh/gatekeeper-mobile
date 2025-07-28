@@ -115,9 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'profile':
         widget.onNavigate?.call(AppScreen.profile);
         break;
-      case 'admin':
-        widget.onNavigate?.call(AppScreen.admin);
-        break;
       case 'reports':
         widget.onNavigate?.call(AppScreen.reports);
         break;
@@ -132,7 +129,6 @@ class _HomeScreenState extends State<HomeScreen> {
       'history': () => _navigateToScreen('history'),
       'dashboard': () => _navigateToScreen('dashboard'),
       'profile': () => _navigateToScreen('profile'),
-      'admin': () => _navigateToScreen('admin'),
       'reports': () => _navigateToScreen('reports'),
       'users': () => _navigateToScreen('users'),
     };

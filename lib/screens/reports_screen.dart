@@ -30,7 +30,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
   bool _isLoading = true;
   String? _errorMessage;
   List<String> _userRoles = [];
-  int _selectedNavIndex = 4; // Reports is selected
+  int _selectedNavIndex = 3; // Reports is selected
   int _selectedTabIndex = 0; // 0 = Active Users, 1 = All Shifts
 
   // Filter variables for all shifts
@@ -118,9 +118,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
       case 'profile':
         widget.onNavigate(AppScreen.profile);
         break;
-      case 'admin':
-        widget.onNavigate(AppScreen.admin);
-        break;
       case 'reports':
         // Already on reports
         break;
@@ -135,7 +132,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
       'history': () => _navigateToScreen('history'),
       'dashboard': () => _navigateToScreen('dashboard'),
       'profile': () => _navigateToScreen('profile'),
-      'admin': () => _navigateToScreen('admin'),
       'reports': () => _navigateToScreen('reports'),
       'users': () => _navigateToScreen('users'),
     };

@@ -38,6 +38,61 @@ class UserService {
     }
   }
 
+  Future<Map<String, dynamic>> updateProfile({
+    String? email,
+    String? firstName,
+    String? lastName,
+  }) async {
+    try {
+      final authService = AuthService();
+      final token = await authService.getToken();
+
+      if (token == null) {
+        return {'success': false, 'message': 'No hay sesión activa'};
+      }
+
+      // Create request body with only provided fields
+      final Map<String, dynamic> requestBody = {};
+      if (email != null && email.isNotEmpty)
+        requestBody['email'] = email.trim().toLowerCase();
+      if (firstName != null && firstName.isNotEmpty)
+        requestBody['firstName'] = firstName.trim();
+      if (lastName != null && lastName.isNotEmpty)
+        requestBody['lastName'] = lastName.trim();
+
+      // Don't send request if nothing to update
+      if (requestBody.isEmpty) {
+        return {'success': false, 'message': 'No hay cambios para actualizar'};
+      }
+
+      final response = await http.patch(
+        Uri.parse('$baseUrl$profileEndpoint'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return {
+          'success': true,
+          'data': data,
+          'message': 'Perfil actualizado exitosamente',
+        };
+      } else {
+        final errorData = json.decode(response.body);
+        return {
+          'success': false,
+          'message': errorData['message'] ?? 'Error al actualizar el perfil',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Error de conexión: $e'};
+    }
+  }
+
   // Helper method to compute user initials from first and last name
   static String computeUserInitials(String firstName, String lastName) {
     final firstInitial = firstName.isNotEmpty ? firstName[0].toUpperCase() : '';
