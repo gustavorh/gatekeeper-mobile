@@ -4,7 +4,6 @@ import '../services/auth_service.dart';
 import '../models/user_model.dart';
 import '../navigation/app_navigator.dart';
 import 'user_form_screen.dart';
-import 'package:another_flushbar/flushbar.dart';
 
 class UsersManagementScreen extends StatefulWidget {
   final VoidCallback onBack;

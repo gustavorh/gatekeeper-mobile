@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../services/shift_service.dart';
-import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../services/navigation_service.dart';
 import '../utils/timezone_utils.dart';
