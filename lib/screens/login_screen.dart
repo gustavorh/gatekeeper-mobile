@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       setState(() {
-        _errorMessage = 'An unexpected error occurred: $e';
+        _errorMessage = 'Ocurrió un error inesperado: $e';
       });
     } finally {
       setState(() {

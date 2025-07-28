@@ -70,11 +70,11 @@ class AuthService {
         final errorData = json.decode(response.body);
         return {
           'success': false,
-          'message': errorData['message'] ?? 'Login failed',
+          'message': errorData['message'] ?? 'Error de inicio de sesión',
         };
       }
     } catch (e) {
-      return {'success': false, 'message': 'Network error: $e'};
+      return {'success': false, 'message': 'Error de red: $e'};
     }
   }
 

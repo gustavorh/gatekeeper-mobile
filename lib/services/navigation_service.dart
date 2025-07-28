@@ -10,32 +10,32 @@ class NavigationService {
   static const List<NavigationItem> _allNavigationItems = [
     NavigationItem(
       id: 'history',
-      label: 'History',
+      label: 'Historial',
       emoji: '📊',
       allowedRoles: ['user', 'admin'],
       badgeCount: 3, // TODO: display total shifts
     ),
     NavigationItem(
       id: 'dashboard',
-      label: 'Dashboard',
+      label: 'Inicio',
       emoji: '🏠',
       allowedRoles: ['user', 'admin'],
     ),
     NavigationItem(
       id: 'profile',
-      label: 'Profile',
+      label: 'Perfil',
       icon: Icons.person,
       allowedRoles: ['user', 'admin'],
     ),
     NavigationItem(
       id: 'reports',
-      label: 'Reports',
+      label: 'Reportes',
       icon: Icons.assessment,
       allowedRoles: ['admin'],
     ),
     NavigationItem(
       id: 'users',
-      label: 'Users',
+      label: 'Usuarios',
       icon: Icons.people,
       allowedRoles: ['admin'],
     ),

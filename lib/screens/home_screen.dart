@@ -448,8 +448,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             null &&
                                         _currentShift!['data']!['data']!['status'] ==
                                             'active'
-                                    ? 'Currently Clocked In'
-                                    : 'Currently Clocked Out',
+                                    ? 'Actualmente en Turno'
+                                    : 'Actualmente Fuera de Turno',
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -513,7 +513,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   SizedBox(height: 8),
                                   Text(
-                                    'Clock In',
+                                    'Marcar Entrada',
                                     style: TextStyle(
                                       fontSize: 18,
                                       color: Colors.white,
@@ -549,7 +549,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   SizedBox(height: 8),
                                   Text(
-                                    'Clock Out',
+                                    'Marcar Salida',
                                     style: TextStyle(
                                       fontSize: 18,
                                       color: Colors.white,
@@ -585,7 +585,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             SizedBox(height: 8),
                             Text(
-                              'Lunch Break',
+                              'Pausa de Almuerzo',
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,
@@ -620,7 +620,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            "Today's Summary",
+                            "Resumen de Hoy",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -629,7 +629,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           const SizedBox(height: 18),
                           _summaryRow(
-                            'Clock In Time',
+                            'Hora de Entrada',
                             _currentShift != null &&
                                     _currentShift!['data'] != null &&
                                     _currentShift!['data']!['data'] != null &&
@@ -641,9 +641,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   )
                                 : '--:--',
                           ),
-                          _summaryRow('Lunch Break', '--:-- to --:--'),
+                          _summaryRow('Pausa de Almuerzo', '--:-- a --:--'),
                           _summaryRow(
-                            'Hours Worked',
+                            'Horas Trabajadas',
                             _currentShift != null &&
                                     _currentShift!['data'] != null &&
                                     _currentShift!['data']!['data'] != null &&
@@ -657,7 +657,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 : '0h 0m',
                           ),
                           _summaryRow(
-                            'Status',
+                            'Estado',
                             _currentShift != null &&
                                     _currentShift!['data'] != null &&
                                     _currentShift!['data']!['data'] != null &&
@@ -666,7 +666,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ? _currentShift!['data']!['data']!['status']
                                       .toString()
                                       .toUpperCase()
-                                : 'NOT STARTED',
+                                : 'NO INICIADO',
                             valueBold: true,
                           ),
                         ],
