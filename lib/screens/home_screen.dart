@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../services/shift_service.dart';
 import '../services/user_service.dart';
 import '../services/navigation_service.dart';
 import '../utils/timezone_utils.dart';
 import '../widgets/modular_bottom_nav_bar.dart';
 import '../navigation/app_navigator.dart';
+import '../features/auth/presentation/bloc/auth_bloc.dart';
+import '../features/auth/presentation/bloc/auth_event.dart';
 import 'package:another_flushbar/flushbar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -221,6 +223,12 @@ class _HomeScreenState extends State<HomeScreen> {
     ).show(context);
   }
 
+  void _handleLogout() {
+    // Use the new BLoC-based logout
+    context.read<AuthBloc>().add(const AuthLogoutRequested());
+    // The main app will handle the state change automatically
+  }
+
   @override
   Widget build(BuildContext context) {
     // Extract user data from profile
@@ -361,11 +369,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(top: 8.0, left: 8.0),
                             child: GestureDetector(
-                              onTap: () async {
-                                final authService = AuthService();
-                                await authService.logout();
-                                widget.onLogout();
-                              },
+                              onTap: _handleLogout,
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16,
